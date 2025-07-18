@@ -1,153 +1,149 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
 
 export default function Dashboard() {
-  const { currentUser } = useAuth();
-  const [projects, setProjects] = useState(currentUser?.projects || []);
+  const { currentUser, setCurrentUser } = useAuth();
+  const [projects, setProjects] = useState([]);
+  const [newProjectTitle, setNewProjectTitle] = useState("");
+
+  useEffect(() => {
+    if (currentUser?.projects) {
+      const updatedProjects = currentUser.projects.map((project) => {
+        const isCompleted =
+          project.tasks.length > 0 &&
+          project.tasks.every((task) => task.status === "completed");
+        return { ...project, completed: isCompleted };
+      });
+      setProjects(updatedProjects);
+    }
+  }, [currentUser]);
+
+  if (!currentUser) {
+    return (
+      <p className="p-4 text-red-600">
+        Please login to view your dashboard.
+      </p>
+    );
+  }
 
   const totalProjects = projects.length;
-  const completedProjects = projects.filter(
-    (p) => p.tasks.length > 0 && p.tasks.every((t) => t.status === "completed")
-  ).length;
-
-  const handleToggleTask = (projectId, taskId) => {
-    const updatedProjects = projects.map((project) => {
-      if (project.id === projectId) {
-        const updatedTasks = project.tasks.map((task) =>
-          task.id === taskId
-            ? {
-                ...task,
-                status: task.status === "completed" ? "active" : "completed",
-              }
-            : task
-        );
-        return { ...project, tasks: updatedTasks };
-      }
-      return project;
-    });
-    setProjects(updatedProjects);
-  };
+  const completedProjects = projects.filter((p) => p.completed).length;
+  const ongoingProjects = projects.filter((p) => !p.completed);
 
   const handleAddProject = () => {
-    const title = prompt("Enter project title:");
-    if (!title) return;
+    if (!newProjectTitle.trim()) return;
     const newProject = {
       id: `p${Date.now()}`,
-      title,
+      title: newProjectTitle,
       tasks: [],
     };
-    setProjects([...projects, newProject]);
-  };
-
-  const handleAddTask = (projectId) => {
-    const title = prompt("Enter task title:");
-    if (!title) return;
-    const newTask = {
-      id: `t${Date.now()}`,
-      title,
-      status: "active",
+    const updatedUser = {
+      ...currentUser,
+      projects: [...currentUser.projects, newProject],
     };
-    const updatedProjects = projects.map((project) =>
-      project.id === projectId
-        ? { ...project, tasks: [...project.tasks, newTask] }
-        : project
-    );
-    setProjects(updatedProjects);
-  };
-
-  const handleMarkProjectCompleted = (projectId) => {
-    const updatedProjects = projects.map((project) =>
-      project.id === projectId
-        ? {
-            ...project,
-            tasks: project.tasks.map((t) => ({ ...t, status: "completed" })),
-          }
-        : project
-    );
-    setProjects(updatedProjects);
+    setCurrentUser(updatedUser);
+    localStorage.setItem("projexa-user", JSON.stringify(updatedUser));
+    setNewProjectTitle("");
   };
 
   return (
-    <main className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold text-indigo-600 mb-4">
-        Welcome, {currentUser?.username}
-      </h1>
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-indigo-100 p-4 rounded shadow">
-          <h3 className="text-sm text-gray-600">Total Projects</h3>
-          <p className="text-2xl font-bold text-indigo-800">{totalProjects}</p>
-        </div>
-        <div className="bg-green-100 p-4 rounded shadow">
-          <h3 className="text-sm text-gray-600">Completed Projects</h3>
-          <p className="text-2xl font-bold text-green-800">{completedProjects}</p>
+    <div className="p-4 sm:p-6 md:p-8 max-w-6xl mx-auto space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-3xl sm:text-4xl font-bold text-indigo-700">
+          Welcome, {currentUser.username}
+        </h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <input
+            type="text"
+            placeholder="New Project Title"
+            value={newProjectTitle}
+            onChange={(e) => setNewProjectTitle(e.target.value)}
+            className="border border-gray-300 rounded-md p-2 w-full sm:w-64"
+          />
+          <button
+            onClick={handleAddProject}
+            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 w-full sm:w-auto"
+          >
+            Add Project
+          </button>
         </div>
       </div>
 
-      <div className="mb-6 flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-800">Projects</h2>
-        <button
-          onClick={handleAddProject}
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-        >
-          + Add Project
-        </button>
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-white border-l-4 border-indigo-500 p-6 rounded-xl shadow">
+          <p className="text-xl font-semibold text-gray-700">
+            Total Projects
+          </p>
+          <p className="text-3xl font-bold text-indigo-700">{totalProjects}</p>
+        </div>
+        <div className="bg-white border-l-4 border-green-500 p-6 rounded-xl shadow">
+          <p className="text-xl font-semibold text-gray-700">
+            Completed Projects
+          </p>
+          <p className="text-3xl font-bold text-green-600">
+            {completedProjects}
+          </p>
+        </div>
       </div>
 
-      {projects.map((project) => {
-        const completedTasks = project.tasks.filter((t) => t.status === "completed").length;
-        const totalTasks = project.tasks.length;
-        const allCompleted = totalTasks > 0 && completedTasks === totalTasks;
-
-        return (
-          <div key={project.id} className="border rounded p-4 mb-6">
-            <div className="flex justify-between items-center mb-3">
-              <div>
-                <h3 className="text-lg font-bold text-indigo-700">{project.title}</h3>
-                <p className="text-sm text-gray-600">
-                  {completedTasks} / {totalTasks} tasks completed
-                </p>
-              </div>
-              <button
-                onClick={() => handleAddTask(project.id)}
-                className="text-sm px-3 py-1 bg-indigo-100 border border-indigo-600 text-indigo-700 rounded hover:bg-indigo-200"
+      {/* Ongoing Projects */}
+      <div>
+        <h2 className="text-2xl font-bold text-indigo-600 border-b pb-2 mb-4">
+          Ongoing Projects
+        </h2>
+        {ongoingProjects.length === 0 ? (
+          <p className="text-gray-500">No ongoing projects.</p>
+        ) : (
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {ongoingProjects.map((project) => (
+              <li
+                key={project.id}
+                className="bg-indigo-50 p-4 rounded-xl shadow hover:shadow-md transition"
               >
-                + Add Task
-              </button>
-            </div>
-
-            {project.tasks.map((task) => (
-              <div
-                key={task.id}
-                className="flex items-center justify-between py-2 border-b"
-              >
-                <div>
-                  <p className={`font-medium ${task.status === "completed" ? "line-through text-gray-400" : ""}`}>
-                    {task.title}
-                  </p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={task.status === "completed"}
-                  onChange={() => handleToggleTask(project.id, task.id)}
-                  className="w-4 h-4 text-indigo-600"
-                />
-              </div>
+                <Link
+                  href={`/project/${project.id}`}
+                  className="text-lg font-semibold text-indigo-700 hover:underline"
+                >
+                  {project.title}
+                </Link>
+              </li>
             ))}
+          </ul>
+        )}
+      </div>
 
-            {allCompleted ? (
-              <button
-                onClick={() => handleMarkProjectCompleted(project.id)}
-                className="mt-3 text-sm px-3 py-1 border border-green-600 text-green-700 rounded hover:bg-green-100"
-              >
-                ✅ Mark Project as Completed
-              </button>
-            ) : null}
-          </div>
-        );
-      })}
-    </main>
+      {/* Completed Projects */}
+      <div>
+        <h2 className="text-2xl font-bold text-green-600 border-b pb-2 mb-4">
+          Completed Projects
+        </h2>
+        {completedProjects === 0 ? (
+          <p className="text-gray-500">No completed projects.</p>
+        ) : (
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {projects
+              .filter((project) => project.completed)
+              .map((project) => (
+                <li
+                  key={project.id}
+                  className="bg-green-50 p-4 rounded-xl shadow hover:shadow-md transition"
+                >
+                  <Link
+                    href={`/project/${project.id}`}
+                    className="text-lg font-semibold text-green-700 hover:underline"
+                  >
+                    {project.title}
+                  </Link>
+                </li>
+              ))}
+          </ul>
+        )}
+      </div>
+    </div>
   );
 }

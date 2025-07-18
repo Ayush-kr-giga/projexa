@@ -15,7 +15,6 @@ const Navbar = () => {
 
         <div className="flex space-x-6 items-center">
           <Link href="/" className="text-gray-700 hover:text-indigo-600 font-medium">Home</Link>
-          <Link href="/about" className="text-gray-700 hover:text-indigo-600 font-medium">About</Link>
           <Link href={isLoggedIn ? "/dashboard" : "/login"} className="text-gray-700 hover:text-indigo-600 font-medium">Dashboard</Link>
 
           {!isLoggedIn ? (

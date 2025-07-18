@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 export default function page (){
     return (
         <>
-        <Navbar/>
+        {/* <Navbar/> */}
         <div className="min-h-screen px-6 py-12 bg-white text-gray-800">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-indigo-700 mb-6">About Projexa</h1>

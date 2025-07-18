@@ -1,15 +1,19 @@
+"use client";
+
 import '../styles/globals.css';
 
-export const metadata = {
-  title: 'Projexa',
-  description: 'Manage your projects efficiently with Projexa',
-};
+
+import { AuthProvider } from "@/context/AuthContext";
+import Navbar from "@/components/Navbar";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-gray-100 text-gray-900">
-        {children}
+      <body>
+        <AuthProvider>
+          <Navbar />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

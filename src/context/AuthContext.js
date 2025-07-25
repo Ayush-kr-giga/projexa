@@ -2,9 +2,9 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-// Create the context
+
 const AuthContext = createContext();
-// Provide context to the app
+
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const router = useRouter();
@@ -36,5 +36,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Hook to use auth context anywhere
 export const useAuth = () => useContext(AuthContext);

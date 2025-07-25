@@ -51,7 +51,7 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 sm:p-6 md:p-8 max-w-6xl mx-auto space-y-8">
-      {/* Header */}
+      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-3xl sm:text-4xl font-bold text-indigo-700">
           Welcome, {currentUser.username}
@@ -73,7 +73,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="bg-white border-l-4 border-indigo-500 p-6 rounded-xl shadow">
           <p className="text-xl font-semibold text-gray-700">
@@ -91,7 +91,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Ongoing Projects */}
+      
       <div>
         <h2 className="text-2xl font-bold text-indigo-600 border-b pb-2 mb-4">
           Ongoing Projects
@@ -117,7 +117,7 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Completed Projects */}
+      
       <div>
         <h2 className="text-2xl font-bold text-green-600 border-b pb-2 mb-4">
           Completed Projects

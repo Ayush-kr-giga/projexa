@@ -20,7 +20,7 @@ export default function LoginPage() {
     );
 
     if (user) {
-      login(user); // 👈 This sets it in context and localStorage
+      login(user); 
       router.push("/dashboard");
     } else {
       alert("Invalid credentials.");

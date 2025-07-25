@@ -8,22 +8,22 @@ export default function SignupPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    // Initialize dummy users if not in localStorage
-    const existingUsers = localStorage.getItem("projexa-users");
-    if (!existingUsers) {
-      localStorage.setItem(
-        "projexa-users",
-        JSON.stringify([
-          {
-            username: "ayush",
-            password: "123456",
-            projects: [],
-          },
-        ])
-      );
-    }
-  }, []);
+//   useEffect(() => {
+    
+//     const existingUsers = localStorage.getItem("projexa-users");
+//     if (!existingUsers) {
+//       localStorage.setItem(
+//         "projexa-users",
+//         JSON.stringify([
+//           {
+//             username: "ayush",
+//             password: "123456",
+//             projects: [],
+//           },
+//         ])
+//       );
+//     }
+//   }, []);
 
   const handleSignup = (e) => {
     e.preventDefault();

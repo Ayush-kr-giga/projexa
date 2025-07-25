@@ -75,7 +75,7 @@ export default function ProjectPage() {
 
   return (
     <div className="p-4 sm:p-6 md:p-8 space-y-8 max-w-4xl mx-auto">
-      {/* Header */}
+      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <h1 className="text-2xl sm:text-3xl font-bold text-indigo-700">{project.title}</h1>
         <Link href="/dashboard" className="text-sm text-indigo-600 hover:underline">
@@ -83,7 +83,7 @@ export default function ProjectPage() {
         </Link>
       </div>
 
-      {/* Stats */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="bg-white border-l-4 border-indigo-500 p-4 sm:p-6 rounded-xl shadow">
           <p className="text-lg sm:text-xl font-semibold text-gray-700">Total Tasks</p>
@@ -95,7 +95,7 @@ export default function ProjectPage() {
         </div>
       </div>
 
-      {/* Task List */}
+      
       <div>
         <h2 className="text-xl sm:text-2xl font-bold text-indigo-600 mb-4">Tasks</h2>
         {totalTasks === 0 ? (
@@ -130,7 +130,7 @@ export default function ProjectPage() {
         )}
       </div>
 
-      {/* Add Task Input */}
+      
       {!isCompleted && (
         <div className="flex flex-col sm:flex-row gap-2">
           <input
@@ -149,7 +149,7 @@ export default function ProjectPage() {
         </div>
       )}
 
-      {/* Mark Project as Completed Button */}
+      
       {!isCompleted && totalTasks > 0 && completedTasks === totalTasks && (
         <button
           onClick={handleMarkProjectComplete}
